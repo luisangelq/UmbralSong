@@ -1,23 +1,34 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from "react"
+import Form from "./components/Form";
+import axios from "axios";
 
 function App() {
+
+  const [wordsearch, saveWordSearch] = useState({});
+  const [ word, saveWord] = useState("");
+
+  const {artist, song} = wordsearch;
+
+  useEffect(() => {
+    if(Object.keys(wordsearch).length === 0) return;
+
+    const consultApi = async () => {
+      
+      const url = `https://api.lyrics.ovh/v1/${artist}/${song}`;
+
+      const result = await axios(url);
+
+      saveWord(result);
+    }
+    consultApi();
+
+  }, [artist, song, wordsearch])
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Form 
+        saveWordSearch={saveWordSearch}
+      />
     </div>
   );
 }
